@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Авторизация</title>
+    <meta charset="utf-8" />
+<style>
+    
+</style>
+</head>
+<body>
+    <h1>Введите данные для входа:</h1>
+    <form action="/login" name="registerForm">
+        <label>Имя:</label><br/>
+        <input type="text" name="userName" /><br/><br/>
+        <label>Возраст:</label><br/>
+        <input type="number" name="userAge" /><br/><br/>
+        <input type="submit" onclick="onPost()" /><br/><br/>        
+    </form>
+<p>Консоль браузера открывается/закрывается после нажатия на клавишу F12.</p>
+
+  
+    <script>
+
+    var xhr = new XMLHttpRequest();
+
+    function getUser(){
+        var Name = document.registerForm.userName.value;
+        var Age = parseInt(document.registerForm.userAge.value);
+        return {name: Name, age: Age};
+    }
+
+    function onGet(){
+        xhr.open('GET', "/api/users", true);
+        xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(users);
+        } else {
+        console.error(users);
+        }
+        }
+        xhr.send(null);
+    }
+
+    function onPost(){
+        var json = JSON.stringify(getUser());
+        xhr.open("POST", "/login", true);
+        xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+        xhr.send(json);
+    }
+
+    onGet();
+    </script>
+</body>
+<html>
+    <!--
+IntelliJ IDEA Key Bindings for Visual Studio Code
+Open HTML in Default Browser
+Emmet Abbreviation
+-->

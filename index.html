@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <meta charset="utf-8" />
+<style>
+    input {
+      margin-right: 1px;  
+    }
+</style>
+</head>
+<body>
+    <h1 id="user"></h1>
+<p>Консоль браузера открывается/закрывается после нажатия на клавишу F12.</p>
+  <h2>Введите пожалуйста учётные данные пользователя:</h2>
+    <form action="/logout" name="registerForm">
+        <label>Id</label><br/>
+        <input type="number" name="userId" value="2" /><br/><br/>
+        <label>Name</label><br/>
+        <input type="text" name="userName" value="Mister" /><br/><br/>
+        <label>Age</label><br/>
+        <input type="number" name="userAge" value="20" /><br/><br/>
+        <input type="button" onclick="onGet()" value="Get" />
+        <input type="button" onclick="onPost()" value="Post" /><br/><br/>
+        <input type="button" onclick="onGetById()" value="GetById" />
+        <input type="button" onclick="onPostById()" value="PostById" />
+        <input type="button" onclick="onPutById()" value="PutById" />
+        <input type="button" onclick="onDeleteById()" value="DeleteById" /><br/><br/>
+        <input type="submit" onclick="onLogout()" value="Logout" /><br/><br/>
+    </form>
+
+<h2>Загрузка файлов</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <label>Файл</label><br>
+    <input type="file" name="filedata" /><br><br>
+    <input type="submit" id="submit" value="Загрузить" />
+</form>
+    <br>
+<h2>Скачивание файлов</h2>
+    <div id="text"></div>
+    <br>
+  
+    <script>
+
+    var xhr = new XMLHttpRequest();
+
+    function getUser(){
+        xhr.open('GET', "/user", true);
+        xhr.onload = function () {
+        var user = xhr.responseText;
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        document.getElementById("user").innerHTML = `Здравствуйте ${user}!`;
+        } else {
+        console.error(user);
+        }
+        }
+        xhr.send(null);
+        var Id = parseInt(document.registerForm.userId.value);
+        var Name = document.registerForm.userName.value;
+        var Age = parseInt(document.registerForm.userAge.value);
+        return {id: Id, name: Name, age: Age};
+    }
+
+    function onGet(){
+        xhr.open('GET', "/api/users", true);
+        xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(users);
+        } else {
+        console.error(users);
+        }
+        }
+        xhr.send(null);
+    }
+
+    function onPost(){
+        var json = JSON.stringify(getUser());
+        xhr.open("POST", "/api/users", true);
+        xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+        xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(users);
+        } else {
+        console.error(users);
+        }
+        }
+        xhr.send(json);
+    }
+
+    function onGetById(){
+        xhr.open('GET', "/api/users/"+getUser().id, true);
+        xhr.onload = function () {
+        var user = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(user[0]);
+        } else {
+        console.error(user[0]);
+        }
+        }
+        xhr.send(null);
+    }
+
+    function onPostById(){
+        var json = JSON.stringify(getUser());
+        xhr.open("POST", "/api/users/"+getUser().id, true);
+        xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+        xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(users);
+        } else {
+        console.error(users);
+        }
+        }
+        xhr.send(json);
+    }
+
+    function onPutById(){
+        var json = JSON.stringify(getUser());
+        xhr.open("PUT", "/api/users", true);
+        xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+        xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(users);
+        } else {
+        console.error(users);
+        }
+        }
+        xhr.send(json);
+    }
+
+    function onDeleteById(){
+        xhr.open("DELETE", "/api/users/"+getUser().id, true);
+        xhr.onload = function () {
+        var users = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+        console.log(users);
+        } else {
+        console.error(users);
+        }
+        }
+        xhr.send(null);
+    }
+
+    function onLogout(){
+        var json = JSON.stringify({});
+        xhr.open("POST", "/logout", true);
+        xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+        xhr.send(json);
+    }   
+
+        // Загрузка и скачивание
+        var text = document.getElementById("text");
+        document.getElementById("submit").addEventListener("click", function () {
+            var request = new XMLHttpRequest();
+        
+            function responceLoad() {
+                if (request.readyState == 4) {
+                    var status = request.status;
+                    if (status == 200) {
+                        let text1 = JSON.parse(request.responseText);
+                        console.log(text1);
+                        let p = document.createElement('p');
+                        p.innerHTML = `<a href="${text1.path}">${text1.path}</a>`;
+                        text.appendChild(p);
+                    } else {
+                        console.log("Ответ сервера " + request.statusText);
+                    }
+                }
+            }
+            
+            request.open("GET", "/upload");
+            request.onload = responceLoad;
+            request.send();
+        });
+
+        getUser();
+
+    </script>
+</body>
+<html>
+    <!--
+IntelliJ IDEA Key Bindings for Visual Studio Code
+Open HTML in Default Browser
+Emmet Abbreviation
+-->
