@@ -1,0 +1,16 @@
+{
+  "name": "users",
+  "version": "1.0.0",
+  "description": "for deploy to heroku",
+  "main": "index.js",
+  "scripts": {
+    "test": "default"
+  },
+  "author": "ghoncharow & metanit",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "multer": "^1.4.1",
+    "mysql2": "^1.6.5"
+  }
+}
