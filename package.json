@@ -1,7 +1,7 @@
 {
   "name": "users",
   "version": "1.0.0",
-  "description": "for deploy to heroku",
+  "description": "for deploy to zeit now",
   "main": "index.js",
   "scripts": {
     "test": "default"
